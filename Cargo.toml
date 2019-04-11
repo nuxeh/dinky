@@ -5,7 +5,12 @@ authors = ["Edward Cragg <drq.11235@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+serde = "1.0.88"
+serde_derive = "1.0.88"
 docopt = "1.1.0"
+log = "0.4.6"
+stderrlog = "0.4.1"
+atty = "0.2.11"
 iron = "0.6.0"
 diesel = "1.4.2"
 harsh = "0.1.6"
