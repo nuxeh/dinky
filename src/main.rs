@@ -8,15 +8,15 @@
 extern crate docopt;
 #[macro_use]
 extern crate log;
-extern crate stderrlog;
 extern crate atty;
+extern crate stderrlog;
 #[macro_use]
 extern crate serde_derive;
 
-use std::path::PathBuf;
-use docopt::Docopt;
-use stderrlog::{Timestamp, ColorChoice};
 use atty::{is, Stream};
+use docopt::Docopt;
+use std::path::PathBuf;
+use stderrlog::{ColorChoice, Timestamp};
 
 const USAGE: &str = "
 Link shortening service.
@@ -51,13 +51,13 @@ fn main() {
     // don't output colours or include timestamps on stderr if piped
     let (coloured_output, mut timestamp) = if is(Stream::Stderr) {
         (ColorChoice::Auto, Timestamp::Second)
-    } else{
+    } else {
         (ColorChoice::Never, Timestamp::Off)
     };
 
     // force timestamp
     if args.flag_timestamp {
-        timestamp = Timestamp::Second
+        timestamp = Timestamp::Second;
     };
 
     // start logger
