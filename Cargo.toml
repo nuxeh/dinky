@@ -1,0 +1,7 @@
+[package]
+name = "dinky"
+version = "0.1.0"
+authors = ["Edward Cragg <drq.11235@gmail.com>"]
+edition = "2018"
+
+[dependencies]
