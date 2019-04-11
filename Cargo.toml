@@ -5,3 +5,6 @@ authors = ["Edward Cragg <drq.11235@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+iron = "0.6.0"
+diesel = "1.4.2"
+harsh = "0.1.6"
