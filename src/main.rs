@@ -12,11 +12,18 @@ extern crate atty;
 extern crate stderrlog;
 #[macro_use]
 extern crate serde_derive;
+extern crate iron;
+#[macro_use]
+extern crate router;
+extern crate params;
 
 use atty::{is, Stream};
 use docopt::Docopt;
 use std::path::PathBuf;
 use stderrlog::{ColorChoice, Timestamp};
+
+mod http;
+mod db;
 
 const USAGE: &str = "
 Link shortening service.
@@ -63,6 +70,9 @@ fn main() {
     // start logger
     stderrlog::new()
         .module(module_path!())
+        .modules(vec![
+            "http",
+        ])
         .verbosity(args.flag_verbose + MIN_VERBOSITY)
         .timestamp(timestamp)
         .color(coloured_output)
@@ -70,4 +80,5 @@ fn main() {
         .unwrap();
 
     info!("dinky starting...");
+    http::run();
 }
