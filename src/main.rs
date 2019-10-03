@@ -16,6 +16,7 @@ extern crate iron;
 #[macro_use]
 extern crate router;
 extern crate params;
+extern crate url;
 
 use atty::{is, Stream};
 use docopt::Docopt;
@@ -24,6 +25,7 @@ use stderrlog::{ColorChoice, Timestamp};
 
 mod http;
 mod db;
+mod hash;
 
 const USAGE: &str = "
 Link shortening service.
@@ -80,5 +82,5 @@ fn main() {
         .unwrap();
 
     info!("dinky starting...");
-    http::run();
+    http::listen();
 }
