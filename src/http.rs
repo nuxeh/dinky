@@ -9,7 +9,7 @@ fn index() -> String {
     String::from("index")
 }
 
-fn process_link(link: &str) -> String {
+fn shorten(link: &str, base: &str) -> String {
     let url = match link.parse::<Url>() {
         Ok(url) => url,
         _ => return String::from(format!("{} '{}'", "invalid URL", link)),
@@ -17,29 +17,25 @@ fn process_link(link: &str) -> String {
 
     info!("adding link <{}>", link);
 
-    format!("<a href=\"{}\">{}</a>", link, link)
+    format!("<a href=\"{}{}\">{}{}</a>", base, link, base, link)
 }
 
 fn handle_submission(req: &mut Request) -> IronResult<Response> {
-    let mut request_url: Url = req.url.clone().into();
-    request_url.set_query(None);
-    info!("{}", request_url);
-    let map = req.get_ref::<Params>().unwrap();
-    let content_type = "text/html".parse::<mime::Mime>().unwrap();
+    let cont_html = "text/html".parse::<mime::Mime>().unwrap();
 
-    info!("{:?}", map);
+    let mut req_url: Url = req.url.clone().into();
+    req_url.set_query(None);
+    let req_url = req_url.into_string();
 
-    match map.find(&["url"]) {
+    let params = req.get_ref::<Params>().unwrap();
+
+    match params.find(&["url"]) {
         Some(&Value::String(ref name)) => {
             Ok(Response::with(
-                (content_type, iron::status::Ok, process_link(name))
+                (cont_html, iron::status::Ok, shorten(name, &req_url))
             ))
         },
-        _ => {
-            Ok(Response::with(
-                (iron::status::Ok, index())
-            ))
-        },
+        _ => Ok(Response::with((iron::status::Ok, index()))),
     }
 }
 
