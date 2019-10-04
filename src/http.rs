@@ -21,7 +21,7 @@ fn shorten(link: &str, base: &str) -> String {
     format!("<a href=\"{}{}\">{}{}</a>", base, link, base, link)
 }
 
-fn handle_submission(req: &mut Request) -> IronResult<Response> {
+fn submit(req: &mut Request) -> IronResult<Response> {
     let cont_html = "text/html".parse::<mime::Mime>().unwrap();
 
     let mut req_url: Url = req.url.clone().into();
@@ -43,7 +43,7 @@ fn handle_submission(req: &mut Request) -> IronResult<Response> {
     }
 }
 
-fn handle_redirect(req: &mut Request) -> IronResult<Response> {
+fn redirect(req: &mut Request) -> IronResult<Response> {
     let ref query = req.extensions.get::<Router>()
         .unwrap().find("hash").unwrap_or("/");
     Ok(Response::with((iron::status::Ok, *query)))
@@ -51,8 +51,8 @@ fn handle_redirect(req: &mut Request) -> IronResult<Response> {
 
 pub fn listen() {
     let router = router!{
-        submit: get "/" => handle_submission,
-        redirect: get "/:hash" => handle_redirect,
+        submit: get "/" => submit,
+        redirect: get "/:hash" => redirect,
     };
 
     Iron::new(router).http("127.0.0.1:3000").unwrap_or_else(|err| {
