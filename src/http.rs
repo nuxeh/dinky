@@ -6,7 +6,7 @@ use std::process;
 use url::Url;
 
 fn index() -> String {
-    String::from("")
+    String::from("index")
 }
 
 fn process_link(link: &str) -> String {
@@ -17,12 +17,12 @@ fn process_link(link: &str) -> String {
 
     info!("adding link <{}>", link);
 
-
     format!("<a href=\"{}\">{}</a>", link, link)
 }
 
 fn handle_submission(req: &mut Request) -> IronResult<Response> {
     let map = req.get_ref::<Params>().unwrap();
+    let content_type = "text/html".parse::<mime::Mime>().unwrap();
 
     info!("{:?}", map);
 
@@ -31,7 +31,7 @@ fn handle_submission(req: &mut Request) -> IronResult<Response> {
     match map.find(&["url"]) {
         Some(&Value::String(ref name)) => {
             Ok(Response::with(
-                (iron::status::Ok, process_link(name))
+                (content_type, iron::status::Ok, process_link(name))
             ))
         },
         _ => {
@@ -54,7 +54,7 @@ pub fn listen() {
         redirect: get "/:hash" => handle_redirect,
     };
 
-    Iron::new(router).http("localhost:3000").unwrap_or_else(|err| {
+    Iron::new(router).http("127.0.0.1:3000").unwrap_or_else(|err| {
         error!("error starting server: {}", err);
         process::exit(1);
     });
