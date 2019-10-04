@@ -21,12 +21,13 @@ fn process_link(link: &str) -> String {
 }
 
 fn handle_submission(req: &mut Request) -> IronResult<Response> {
+    let mut request_url: Url = req.url.clone().into();
+    request_url.set_query(None);
+    info!("{}", request_url);
     let map = req.get_ref::<Params>().unwrap();
     let content_type = "text/html".parse::<mime::Mime>().unwrap();
 
     info!("{:?}", map);
-
-    //let content_type = mime::APPLICATION_JSON;
 
     match map.find(&["url"]) {
         Some(&Value::String(ref name)) => {
