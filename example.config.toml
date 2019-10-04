@@ -1,2 +1,6 @@
 [settings]
 tcp_port = 3000
+
+[hash]
+length = 10
+salt = "dinkysalt123"
