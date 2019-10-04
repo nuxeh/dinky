@@ -12,7 +12,7 @@ fn index() -> String {
 fn process_link(link: &str) -> String {
     let url = match link.parse::<Url>() {
         Ok(url) => url,
-        _ => return String::from("invalid URL"),
+        _ => return String::from(format!("{} '{}'", "invalid URL", link)),
     };
 
     info!("adding link <{}>", link);
