@@ -17,15 +17,18 @@ extern crate iron;
 extern crate router;
 extern crate params;
 extern crate url;
+extern crate directories;
 
 use atty::{is, Stream};
 use docopt::Docopt;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use stderrlog::{ColorChoice, Timestamp};
+use directories::BaseDirs;
 
-mod http;
+mod conf;
 mod db;
 mod hash;
+mod http;
 
 const USAGE: &str = "
 Link shortening service.
@@ -83,4 +86,33 @@ fn main() {
 
     info!("dinky starting...");
     http::listen();
+}
+
+fn expand_tilde(path: &Path) -> PathBuf {
+    match (BaseDirs::new(), path.strip_prefix("~")) {
+        (Some(bd), Ok(stripped)) => bd.home_dir().join(stripped),
+        _ => path.to_owned(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_expand_tilde() {
+        let homedir: PathBuf = BaseDirs::new()
+            .unwrap()
+            .home_dir()
+            .to_owned();
+
+        assert_eq!(expand_tilde(&PathBuf::from("/")),
+            PathBuf::from("/"));
+        assert_eq!(expand_tilde(&PathBuf::from("/abc/~def/ghi/")),
+            PathBuf::from("/abc/~def/ghi/"));
+        assert_eq!(expand_tilde(&PathBuf::from("~/")),
+            PathBuf::from(format!("{}/", homedir.to_str().unwrap())));
+        assert_eq!(expand_tilde(&PathBuf::from("~/ac/df/gi/")),
+            PathBuf::from(format!("{}/ac/df/gi/", homedir.to_str().unwrap())));
+    }
 }
