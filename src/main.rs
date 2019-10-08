@@ -20,6 +20,7 @@ extern crate url;
 extern crate directories;
 #[macro_use]
 extern crate diesel;
+extern crate time;
 
 mod conf;
 mod db;
@@ -90,6 +91,8 @@ fn main() {
         .color(coloured_output)
         .init()
         .unwrap();
+
+    db::insert_url("floobledooble");
 
     info!("dinky starting..."); // on...
     http::listen();

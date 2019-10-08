@@ -1,14 +1,11 @@
-use crate::db_models::*;
-use diesel::prelude::*;
-
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use diesel::sqlite::SqliteConnection;
 use diesel::mysql::MysqlConnection;
-use crate::diesel::connection::SimpleConnection;
-use db_models::*;
-use db_schema::*;
-
+use diesel::connection::SimpleConnection;
+use crate::db_models::*;
+use crate::db_schema::*;
+use time;
 use std::env;
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -30,7 +27,6 @@ pub struct Database {
 }
 
 const INIT_SQLITE: &str = "
-CREATE TABLE IF NOT EXISTS ids (current INTEGER);
 CREATE TABLE IF NOT EXISTS urls (
     id              INTEGER,
     url             TEXT NOT NULL,
@@ -68,25 +64,31 @@ fn connect_mysql() -> MysqlConnection {
         .expect(&format!("Error connecting to {}", database_url))
 }
 
-pub fn insert_url() {
+fn timestamp() -> String {
+    time::now().to_local().ctime().to_string()
+}
+
+pub fn insert_url(url: &str) {
     let connection = connect_sqlite();
 
     let id = urls::table
-        .limit(1)
-        .load::<Id>(&connection)
-        .expect("Error loading posts");
+        .count()
+        .execute(&connection)
+        .unwrap_or(0) as i32;
 
-    let hits = urls::table.filter(urls::id.eq(1))
-        .limit(5)
+    /*
+    let hits = urls::table.filter(urls::id.eq(id))
+        .limit(1)
         .load::<Url>(&connection)
         .expect("Error loading posts");
+*/
 
     let entry = NewUrl {
-        id: 1,
-        url: "foo",
-        created: "foo",
-        accessed: "foo",
-        hits: 1,
+        id: id,
+        url: url,
+        created: &timestamp(),
+        accessed: "",
+        hits: 0,
     };
 
     diesel::insert_into(urls::table)
@@ -95,6 +97,6 @@ pub fn insert_url() {
         .expect("Error saving new post");
 
 
-    println!("{:?}", results);
+    //println!("{:?}", results);
 
 }

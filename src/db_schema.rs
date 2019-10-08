@@ -7,9 +7,3 @@ table! {
         hits -> Integer,
     }
 }
-
-table! {
-    ids (id) {
-        current -> Integer,
-    }
-}
