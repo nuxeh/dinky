@@ -5,10 +5,11 @@ use diesel::mysql::MysqlConnection;
 use diesel::connection::SimpleConnection;
 use crate::db_models::*;
 use crate::db_schema::*;
-use crate::hash::encode;
+use crate::hash::{encode, decode};
 use time;
-use std::env;
 use failure::Error;
+
+use std::env;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub enum DbType {
@@ -78,13 +79,6 @@ pub fn insert_url(url: &str) -> Result<String, Error> {
         .get_result(&connection)
         .unwrap_or(0) as i32;
 
-    /*
-    let hits = urls::table.filter(urls::id.eq(id))
-        .limit(1)
-        .load::<Url>(&connection)
-        .expect("Error loading posts");
-*/
-
     let entry = NewUrl {
         id: id,
         url: url,
@@ -100,5 +94,23 @@ pub fn insert_url(url: &str) -> Result<String, Error> {
     match encode(id) {
         Some(h) => Ok(h),
         None => bail!("Can't encode hash for id {}", id),
+    }
+}
+
+pub fn get_url(hash: &str) -> Result<String, Error> {
+    let connection = connect_sqlite();
+
+    let id = match decode(hash) {
+        Some(h) => h,
+        None => bail!("can't decode hash '{}'", hash),
+    };
+
+    let result = urls::table.filter(urls::id.eq(id))
+        .limit(1)
+        .load::<Url>(&connection)?;
+
+    match result.len() {
+        1 => Ok(result[0].url.clone()),
+        _ => bail!("can't find entry for '{}' (id {})", hash, id),
     }
 }

@@ -4,10 +4,15 @@ use router::Router;
 use params::{Params, Value};
 use std::process;
 use url::Url;
+use failure::Error;
+use crate::db::{insert_url, get_url};
 
 fn index() -> String {
     String::from("index")
 }
+
+//fn error() -> IronResult<Response> {
+//}
 
 fn shorten(link: &str, base: &str) -> String {
     let url = match link.parse::<Url>() {
@@ -15,10 +20,14 @@ fn shorten(link: &str, base: &str) -> String {
         _ => return String::from(format!("{} '{}'", "invalid URL", link)),
     };
 
+    let hash = match insert_url(link) {
+        Ok(h) => h,
+        Err(e) => {
+            error!("Error adding URL to database: {}", e); "".to_string()
+        },
+    };
 
-
-
-    format!("<a href=\"{}{}\">{}{}</a>", base, link, base, link)
+    format!("<a href=\"{}{}\">{}{}</a>", base, hash, base, hash)
 }
 
 fn submit(req: &mut Request) -> IronResult<Response> {
@@ -29,7 +38,6 @@ fn submit(req: &mut Request) -> IronResult<Response> {
     let req_url = req_url.into_string();
 
     let client_addr = req.remote_addr;
-
     let params = req.get_ref::<Params>().unwrap();
 
     match params.find(&["url"]) {
@@ -44,9 +52,19 @@ fn submit(req: &mut Request) -> IronResult<Response> {
 }
 
 fn redirect(req: &mut Request) -> IronResult<Response> {
-    let ref query = req.extensions.get::<Router>()
-        .unwrap().find("hash").unwrap_or("/");
-    Ok(Response::with((iron::status::Ok, *query)))
+    let ref query = req.extensions
+        .get::<Router>()
+        .unwrap()
+        .find("hash")
+        .unwrap_or("/");
+
+    match get_url(query) {
+        Ok(l) => Ok(Response::with((iron::status::Ok, l))),
+        Err(e) => {
+            warn!("{}", e);
+            Ok(Response::with((iron::status::Ok, "Link not found!")))
+        },
+    }
 }
 
 pub fn listen() {

@@ -94,11 +94,6 @@ fn main() {
         .init()
         .unwrap();
 
-    match db::insert_url("floobledooble") {
-        Ok(h) => println!("hash: {}", h),
-        Err(e) => println!("error: {}", e),
-    };
-
     info!("dinky starting..."); // on...
     http::listen();
 }

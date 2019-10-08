@@ -22,6 +22,9 @@ pub struct Hash {
 #[serde(default)]
 pub struct Database {
     pub kind: DbType,
+    pub path: String,
+    pub user: Option<String>,
+    pub pass: Option<String>,
 }
 
 impl Default for Settings {
