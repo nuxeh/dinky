@@ -6,6 +6,9 @@ use diesel::pg::PgConnection;
 use diesel::sqlite::SqliteConnection;
 use diesel::mysql::MysqlConnection;
 use crate::diesel::connection::SimpleConnection;
+use db_models::*;
+use db_schema::*;
+
 use std::env;
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -27,6 +30,7 @@ pub struct Database {
 }
 
 const INIT_SQLITE: &str = "
+CREATE TABLE IF NOT EXISTS ids (current INTEGER);
 CREATE TABLE IF NOT EXISTS urls (
     id              INTEGER,
     url             TEXT NOT NULL,
@@ -35,7 +39,7 @@ CREATE TABLE IF NOT EXISTS urls (
     hits            INTEGER
 );";
 
-pub fn connect_sqlite() -> SqliteConnection {
+fn connect_sqlite() -> SqliteConnection {
     let database_path = env::var("DATABASE_PATH")
         .expect("DATABASE_PATH must be set");
     let connection = SqliteConnection::establish(&database_path)
@@ -47,7 +51,7 @@ pub fn connect_sqlite() -> SqliteConnection {
 const INIT_POSTGRES: &str = "
 ";
 
-pub fn connect_postgres() -> PgConnection {
+fn connect_postgres() -> PgConnection {
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
     PgConnection::establish(&database_url)
@@ -57,9 +61,40 @@ pub fn connect_postgres() -> PgConnection {
 const INIT_MYSQL: &str = "
 ";
 
-pub fn connect_mysql() -> MysqlConnection {
+fn connect_mysql() -> MysqlConnection {
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
     MysqlConnection::establish(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
+}
+
+pub fn insert_url() {
+    let connection = connect_sqlite();
+
+    let id = urls::table
+        .limit(1)
+        .load::<Id>(&connection)
+        .expect("Error loading posts");
+
+    let hits = urls::table.filter(urls::id.eq(1))
+        .limit(5)
+        .load::<Url>(&connection)
+        .expect("Error loading posts");
+
+    let entry = NewUrl {
+        id: 1,
+        url: "foo",
+        created: "foo",
+        accessed: "foo",
+        hits: 1,
+    };
+
+    diesel::insert_into(urls::table)
+        .values(&entry)
+        .execute(&connection)
+        .expect("Error saving new post");
+
+
+    println!("{:?}", results);
+
 }
