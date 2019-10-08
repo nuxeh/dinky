@@ -1,5 +1,6 @@
 use iron::prelude::*;
 use iron::mime;
+use iron::modifiers::Redirect;
 use router::Router;
 use params::{Params, Value};
 use std::process;
@@ -59,7 +60,10 @@ fn redirect(req: &mut Request) -> IronResult<Response> {
         .unwrap_or("/");
 
     match get_url(query) {
-        Ok(l) => Ok(Response::with((iron::status::Ok, l))),
+        Ok(l) => {
+            let url = iron::Url::parse(&l).unwrap();
+            Ok(Response::with((iron::status::Found, Redirect(url))))
+        },
         Err(e) => {
             warn!("{}", e);
             Ok(Response::with((iron::status::Ok, "Link not found!")))
