@@ -98,6 +98,16 @@ fn main() {
     use db_schema::urls;
 
     let connection = db::connect_sqlite();
+
+    let entry = NewUrl {
+        url: "foo",
+    };
+
+    diesel::insert_into(urls::table)
+        .values(&entry)
+        .execute(&connection)
+        .expect("Error saving new post");
+
     let results = urls::table.filter(urls::id.eq(1))
         .limit(5)
         .load::<Url>(&connection)
