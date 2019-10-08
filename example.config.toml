@@ -1,6 +1,10 @@
 [settings]
+bind = "127.0.0.1"
 port = 4444
 
 [hash]
 length = 10
 salt = "dinkysalt123"
+
+[database]
+kind = "Sqlite"

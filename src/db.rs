@@ -7,10 +7,15 @@ use diesel::sqlite::SqliteConnection;
 use diesel::mysql::MysqlConnection;
 use std::env;
 
-enum DbType {
-    Postgres,
+#[derive(Clone, Serialize, Deserialize)]
+pub enum DbType {
     Sqlite,
+    Postgres,
     Mysql,
+}
+
+impl Default for DbType {
+    fn default() -> Self { DbType::Sqlite }
 }
 
 #[derive(Default)]

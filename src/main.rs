@@ -21,18 +21,19 @@ extern crate directories;
 #[macro_use]
 extern crate diesel;
 
-use atty::{is, Stream};
-use docopt::Docopt;
-use std::path::{Path, PathBuf};
-use stderrlog::{ColorChoice, Timestamp};
-use directories::BaseDirs;
-
 mod conf;
 mod db;
 mod db_schema;
 mod db_models;
 mod hash;
 mod http;
+
+use atty::{is, Stream};
+use docopt::Docopt;
+use std::path::{Path, PathBuf};
+use stderrlog::{ColorChoice, Timestamp};
+use directories::BaseDirs;
+use conf::Conf;
 
 const USAGE: &str = "
 Link shortening service.
@@ -76,6 +77,8 @@ fn main() {
         timestamp = Timestamp::Second;
     };
 
+    //let configuration = Conf::load(args.flag_conf);
+
     // start logger
     stderrlog::new()
         .module(module_path!())
@@ -88,7 +91,7 @@ fn main() {
         .init()
         .unwrap();
 
-    info!("dinky starting...");
+    info!("dinky starting..."); // on...
     http::listen();
 }
 

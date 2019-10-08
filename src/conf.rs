@@ -2,10 +2,12 @@ use failure::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 use toml;
+use crate::db::DbType;
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Settings {
+    pub bind: String,
     pub port: usize,
 }
 
@@ -16,10 +18,17 @@ pub struct Hash {
     pub salt: String,
 }
 
+#[derive(Default, Clone, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Database {
+    pub kind: DbType,
+}
+
 impl Default for Settings {
     fn default() -> Self {
         Self {
             port: 4444,
+            bind: "127.0.0.1".to_string(),
         }
     }
 }
@@ -38,6 +47,7 @@ impl Default for Hash {
 pub struct Conf {
     pub settings: Settings,
     pub hash: Hash,
+    pub database: Database,
 }
 
 impl Conf {
