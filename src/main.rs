@@ -21,6 +21,8 @@ extern crate directories;
 #[macro_use]
 extern crate diesel;
 extern crate time;
+#[macro_use]
+extern crate failure;
 
 mod conf;
 mod db;
@@ -92,7 +94,10 @@ fn main() {
         .init()
         .unwrap();
 
-    db::insert_url("floobledooble");
+    match db::insert_url("floobledooble") {
+        Ok(h) => println!("hash: {}", h),
+        Err(e) => println!("error: {}", e),
+    };
 
     info!("dinky starting..."); // on...
     http::listen();

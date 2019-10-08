@@ -5,8 +5,10 @@ use diesel::mysql::MysqlConnection;
 use diesel::connection::SimpleConnection;
 use crate::db_models::*;
 use crate::db_schema::*;
+use crate::hash::encode;
 use time;
 use std::env;
+use failure::Error;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub enum DbType {
@@ -68,12 +70,12 @@ fn timestamp() -> String {
     time::now().to_local().ctime().to_string()
 }
 
-pub fn insert_url(url: &str) {
+pub fn insert_url(url: &str) -> Result<String, Error> {
     let connection = connect_sqlite();
 
     let id = urls::table
         .count()
-        .execute(&connection)
+        .get_result(&connection)
         .unwrap_or(0) as i32;
 
     /*
@@ -93,10 +95,10 @@ pub fn insert_url(url: &str) {
 
     diesel::insert_into(urls::table)
         .values(&entry)
-        .execute(&connection)
-        .expect("Error saving new post");
+        .execute(&connection)?;
 
-
-    //println!("{:?}", results);
-
+    match encode(id) {
+        Some(h) => Ok(h),
+        None => bail!("Can't encode hash for id {}", id),
+    }
 }

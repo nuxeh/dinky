@@ -3,17 +3,17 @@ extern crate harsh;
 use harsh::HarshBuilder;
 
 //pub fn encode(cfg: &Config, id: usize) -> String {
-pub fn encode(id: u64) -> Option<String> {
+pub fn encode(id: i32) -> Option<String> {
     let h = HarshBuilder::new()
         .salt("dinkysalt123")
         .length(10)
         .init()
         .unwrap();
 
-    h.encode(&[id])
+    h.encode(&[id as u64])
 }
 
-pub fn decode(hash: &str) -> Option<u64> {
+pub fn decode(hash: &str) -> Option<i32> {
     let h = HarshBuilder::new()
         .salt("dinkysalt123")
         .length(10)
@@ -21,7 +21,7 @@ pub fn decode(hash: &str) -> Option<u64> {
         .unwrap();
 
     match h.decode(&hash) {
-        Some(s) => Some(s[0]),
+        Some(s) => Some(s[0] as i32),
         None => None,
     }
 }
