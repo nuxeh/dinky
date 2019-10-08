@@ -7,6 +7,12 @@ use diesel::sqlite::SqliteConnection;
 use diesel::mysql::MysqlConnection;
 use std::env;
 
+enum DbType {
+    Postgres,
+    Sqlite,
+    Mysql,
+}
+
 #[derive(Default)]
 pub struct Database {
     pub pg_connection: Option<PgConnection>,
