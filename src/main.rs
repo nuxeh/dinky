@@ -100,7 +100,11 @@ fn main() {
     let connection = db::connect_sqlite();
 
     let entry = NewUrl {
+        id: 1,
         url: "foo",
+        created: "foo",
+        accessed: "foo",
+        hits: 1,
     };
 
     diesel::insert_into(urls::table)
@@ -112,6 +116,8 @@ fn main() {
         .limit(5)
         .load::<Url>(&connection)
         .expect("Error loading posts");
+
+    println!("{:?}", results);
 
     info!("dinky starting..."); // on...
     http::listen();
