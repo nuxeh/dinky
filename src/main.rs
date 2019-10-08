@@ -35,6 +35,10 @@ use stderrlog::{ColorChoice, Timestamp};
 use directories::BaseDirs;
 use conf::Conf;
 
+use self::diesel::prelude::*;
+use db_models::*;
+use db::connect_sqlite;
+
 const USAGE: &str = "
 Link shortening service.
 
@@ -90,6 +94,14 @@ fn main() {
         .color(coloured_output)
         .init()
         .unwrap();
+
+    use db_schema::urls;
+
+    let connection = db::connect_sqlite();
+    let results = urls::table.filter(urls::id.eq(1))
+        .limit(5)
+        .load::<Url>(&connection)
+        .expect("Error loading posts");
 
     info!("dinky starting..."); // on...
     http::listen();
