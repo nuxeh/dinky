@@ -18,6 +18,8 @@ extern crate router;
 extern crate params;
 extern crate url;
 extern crate directories;
+#[macro_use]
+extern crate diesel;
 
 use atty::{is, Stream};
 use docopt::Docopt;
@@ -27,6 +29,8 @@ use directories::BaseDirs;
 
 mod conf;
 mod db;
+mod db_schema;
+mod db_models;
 mod hash;
 mod http;
 
