@@ -67,9 +67,14 @@ fn redirect(req: &mut Request) -> IronResult<Response> {
     }
 }
 
+fn favicon(_: &mut Request) -> IronResult<Response> {
+    Ok(Response::with((iron::status::NotFound)))
+}
+
 pub fn listen() {
     let router = router!{
         submit: get "/" => submit,
+        favicon: get "/favicon.ico" => favicon,
         redirect: get "/:hash" => redirect,
     };
 
