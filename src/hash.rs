@@ -38,7 +38,7 @@ mod tests {
         assert_eq!(encode(3), Some(String::from("ZjV6d06Mw2")));
         assert_eq!(encode(4), Some(String::from("1WPJnQvpNk")));
         assert_eq!(encode(5), Some(String::from("m876Z3r3yM")));
-        assert_eq!(encode(std::u64::MAX), Some(String::from("aOE3eljoeG2zO")));
+        assert_eq!(encode(std::i32::MAX), Some(String::from("V6dKV22glJ")));
     }
 
     #[test]
@@ -48,7 +48,7 @@ mod tests {
         assert_eq!(decode("ZjV6d06Mw2"), Some(3));
         assert_eq!(decode("1WPJnQvpNk"), Some(4));
         assert_eq!(decode("m876Z3r3yM"), Some(5));
-        assert_eq!(decode("aOE3eljoeG2zO"), Some(std::u64::MAX));
+        assert_eq!(decode("V6dKV22glJ"), Some(std::i32::MAX));
     }
 
 }
