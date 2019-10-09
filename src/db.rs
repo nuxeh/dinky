@@ -109,6 +109,18 @@ pub fn get_url(hash: &str) -> Result<String, Error> {
         .limit(1)
         .load::<Url>(&connection)?;
 
+    let hits = result[0].hits + 1;
+
+    diesel::update(urls::table.find(id))
+        .set(urls::hits.eq(&hits))
+        .execute(&connection)
+        .unwrap();
+
+    diesel::update(urls::table.find(id))
+        .set(urls::accessed.eq(&timestamp()))
+        .execute(&connection)
+        .unwrap();
+
     match result.len() {
         1 => Ok(result[0].url.clone()),
         _ => bail!("can't find entry for '{}' (id {})", hash, id),
