@@ -8,3 +8,4 @@ salt = "dinkysalt123"
 
 [database]
 kind = "Sqlite"
+path = ""

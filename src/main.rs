@@ -48,7 +48,6 @@ Options:
     -h --help       Show this help message.
     --version       Print version.
     -v --verbose    Show extra information.
-    -d --db=PATH    Use a sqlite database at PATH.
     -c --conf=PATH  Use configuration file at PATH.
     -t --timestamp  Force timestamps.
 ";
@@ -56,7 +55,6 @@ Options:
 #[derive(Debug, Deserialize, Default)]
 pub struct Args {
     flag_verbose: usize,
-    flag_db: Option<PathBuf>,
     flag_conf: Option<PathBuf>,
     flag_timestamp: bool,
 }
