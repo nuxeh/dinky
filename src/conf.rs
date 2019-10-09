@@ -1,7 +1,10 @@
 use failure::Error;
-use std::fs;
 use std::path::{Path, PathBuf};
+use std::fs;
+use std::fs::File;
+use std::io::Write;
 use toml;
+
 use crate::db::DbType;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -56,6 +59,12 @@ impl Conf {
         let conf = fs::read_to_string(path.as_ref())?;
         let conf: Conf = toml::de::from_str(&conf)?;
         Ok(conf)
+    }
+
+    pub fn write(&self, path: impl AsRef<Path>) -> Result<(), Error> {
+        let mut file = File::create(path)?;
+        file.write_all(toml::ser::to_string(&self)?.as_bytes())?;
+        Ok(())
     }
 }
 

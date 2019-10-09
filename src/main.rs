@@ -33,9 +33,12 @@ mod http;
 
 use atty::{is, Stream};
 use docopt::Docopt;
+use std::process;
 use std::path::{Path, PathBuf};
 use stderrlog::{ColorChoice, Timestamp};
 use directories::{ProjectDirs, BaseDirs};
+use failure::Error;
+use std::fs;
 use conf::Conf;
 
 const USAGE: &str = "
@@ -95,8 +98,11 @@ fn main() {
     };
 
     info!("using configuration at '{}'", conf_path.display());
-
-    let config = Conf::load(conf_path);
+    init_conf(&conf_path).unwrap_or_else(|e| {
+        error!("couldn't initialise config: {}", e);
+        process::exit(1);
+    });
+    let config = Conf::load(&conf_path);
 
     println!("{:#?}", config);
 
@@ -109,6 +115,25 @@ fn expand_tilde(path: &Path) -> PathBuf {
         (Some(bd), Ok(stripped)) => bd.home_dir().join(stripped),
         _ => path.to_owned(),
     }
+}
+
+fn init_conf(conf_path: &PathBuf) -> Result<(), Error>{
+    create_dir_if_missing(conf_path.parent().unwrap())?;
+    if !conf_path.exists() {
+        info!("creating default config '{}'", conf_path.display());
+        Conf::default().write(&conf_path)?;
+    }
+    Ok(())
+}
+
+fn create_dir_if_missing(dir: &Path) -> Result<(), Error> {
+    let dir_str = dir.to_str().unwrap();
+    let exists = dir_str.is_empty() || dir.exists();
+    if !exists {
+        info!("creating directory '{}'", dir_str);
+        fs::create_dir_all(dir)?;
+    }
+    Ok(())
 }
 
 #[cfg(test)]
