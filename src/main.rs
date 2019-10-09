@@ -99,15 +99,17 @@ fn main() {
 
     info!("using configuration at '{}'", conf_path.display());
     init_conf(&conf_path).unwrap_or_else(|e| {
-        error!("couldn't initialise config: {}", e);
+        error!("initialising config: {}", e);
         process::exit(1);
     });
-    let config = Conf::load(&conf_path);
+    let config = Conf::load(&conf_path).unwrap_or_else(|e| {
+        error!("loading config: {}", e);
+        process::exit(1);
+    });
 
     println!("{:#?}", config);
 
-    info!("dinky starting..."); // on...
-    http::listen();
+    http::listen(&config);
 }
 
 fn expand_tilde(path: &Path) -> PathBuf {

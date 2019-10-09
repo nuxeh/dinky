@@ -6,23 +6,24 @@ use router::Router;
 use params::{Params, Value};
 use std::process;
 use url::Url;
-use failure::Error;
+
 use crate::db::{insert_url, get_url};
+use crate::conf::Conf;
 
 fn index() -> String {
     String::from("index")
 }
 
 fn shorten(link: &str, base: &str) -> String {
-    let url = match link.parse::<Url>() {
-        Ok(url) => url,
-        _ => return String::from(format!("{} '{}'", "invalid URL", link)),
+    if link.parse::<Url>().is_err() {
+        return String::from(format!("{} '{}'", "invalid URL", link));
     };
 
     let hash = match insert_url(link) {
         Ok(h) => h,
         Err(e) => {
-            error!("adding URL to database: {}", e); "".to_string()
+            error!("adding URL to database: {}", e); "".to_string();
+            return "Database error.".to_string();
         },
     };
 
@@ -68,17 +69,21 @@ fn redirect(req: &mut Request) -> IronResult<Response> {
 }
 
 fn not_found(_: &mut Request) -> IronResult<Response> {
-    Ok(Response::with((NotFound)))
+    Ok(Response::with(NotFound))
 }
 
-pub fn listen() {
+pub fn listen(conf: &Conf) {
     let router = router!{
         submit: get "/" => submit,
         favicon: get "/favicon.ico" => not_found,
         redirect: get "/:hash" => redirect,
     };
 
-    Iron::new(router).http("127.0.0.1:3000").unwrap_or_else(|err| {
+    let bind = format!("{}:{}", conf.settings.bind, conf.settings.port);
+
+    info!("dinky starting on {}", bind);
+
+    Iron::new(router).http(bind).unwrap_or_else(|err| {
         error!("starting server: {}", err);
         process::exit(1);
     });
