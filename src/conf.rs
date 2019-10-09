@@ -4,21 +4,21 @@ use std::path::{Path, PathBuf};
 use toml;
 use crate::db::DbType;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Settings {
     pub bind: String,
     pub port: usize,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Hash {
     pub length: usize,
     pub salt: String,
 }
 
-#[derive(Default, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Database {
     pub kind: DbType,
@@ -43,7 +43,7 @@ impl Default for Hash {
     }
 }
 
-#[derive(Default, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Conf {
     pub settings: Settings,

@@ -79,7 +79,7 @@ pub fn listen() {
     };
 
     Iron::new(router).http("127.0.0.1:3000").unwrap_or_else(|err| {
-        error!("error starting server: {}", err);
+        error!("starting server: {}", err);
         process::exit(1);
     });
 }

@@ -11,7 +11,7 @@ use failure::Error;
 
 use std::env;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DbType {
     Sqlite,
     Postgres,

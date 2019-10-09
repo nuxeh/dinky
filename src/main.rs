@@ -35,7 +35,7 @@ use atty::{is, Stream};
 use docopt::Docopt;
 use std::path::{Path, PathBuf};
 use stderrlog::{ColorChoice, Timestamp};
-use directories::BaseDirs;
+use directories::{ProjectDirs, BaseDirs};
 use conf::Conf;
 
 const USAGE: &str = "
@@ -66,21 +66,16 @@ fn main() {
         .and_then(|d| d.version(Some("0.1.0".to_string())).deserialize())
         .unwrap_or_else(|e| e.exit());
 
-    // don't output colours or include timestamps on stderr if piped
     let (coloured_output, mut timestamp) = if is(Stream::Stderr) {
         (ColorChoice::Auto, Timestamp::Second)
     } else {
         (ColorChoice::Never, Timestamp::Off)
     };
 
-    // force timestamp
     if args.flag_timestamp {
         timestamp = Timestamp::Second;
     };
 
-    //let configuration = Conf::load(args.flag_conf);
-
-    // start logger
     stderrlog::new()
         .module(module_path!())
         .modules(vec![
@@ -91,6 +86,19 @@ fn main() {
         .color(coloured_output)
         .init()
         .unwrap();
+
+    let dirs = ProjectDirs::from("org", "", "dinky").unwrap();
+
+    let conf_path = match args.flag_conf {
+        Some(ref p) => expand_tilde(p),
+        None => dirs.config_dir().join("config.toml")
+    };
+
+    info!("using configuration at '{}'", conf_path.display());
+
+    let config = Conf::load(conf_path);
+
+    println!("{:#?}", config);
 
     info!("dinky starting..."); // on...
     http::listen();
