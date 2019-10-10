@@ -40,6 +40,7 @@ use directories::{ProjectDirs, BaseDirs};
 use failure::Error;
 use std::fs;
 use conf::Conf;
+use std::sync::Arc;
 
 const USAGE: &str = "
 Link shortening service.
@@ -102,14 +103,14 @@ fn main() {
         error!("initialising config: {}", e);
         process::exit(1);
     });
-    let config = Conf::load(&conf_path).unwrap_or_else(|e| {
+    let config = Arc::new(Conf::load(&conf_path).unwrap_or_else(|e| {
         error!("loading config: {}", e);
         process::exit(1);
-    });
+    }));
 
     println!("{:#?}", config);
 
-    http::listen(&config);
+    http::listen(config);
 }
 
 fn expand_tilde(path: &Path) -> PathBuf {

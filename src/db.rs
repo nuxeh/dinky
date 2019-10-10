@@ -3,13 +3,13 @@ use diesel::pg::PgConnection;
 use diesel::sqlite::SqliteConnection;
 use diesel::mysql::MysqlConnection;
 use diesel::connection::SimpleConnection;
-use crate::db_models::*;
-use crate::db_schema::*;
-use crate::hash::{encode, decode};
 use time;
 use failure::Error;
 
-use std::env;
+use crate::db_models::*;
+use crate::db_schema::*;
+use crate::hash::{encode, decode};
+use crate::conf::Conf;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DbType {
@@ -38,9 +38,8 @@ CREATE TABLE IF NOT EXISTS urls (
     hits            INTEGER
 );";
 
-fn connect_sqlite() -> SqliteConnection {
-    let database_path = env::var("DATABASE_PATH")
-        .expect("DATABASE_PATH must be set");
+fn connect_sqlite(conf: &Conf) -> SqliteConnection {
+    let database_path = &conf.database.path;
     let connection = SqliteConnection::establish(&database_path)
         .expect(&format!("Error connecting to {}", database_path));
     connection.batch_execute(INIT_SQLITE).unwrap();
@@ -50,9 +49,8 @@ fn connect_sqlite() -> SqliteConnection {
 const INIT_POSTGRES: &str = "
 ";
 
-fn connect_postgres() -> PgConnection {
-    let database_url = env::var("DATABASE_URL")
-        .expect("DATABASE_URL must be set");
+fn connect_postgres(conf: &Conf) -> PgConnection {
+    let database_url = &conf.database.path;
     PgConnection::establish(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
 }
@@ -60,9 +58,8 @@ fn connect_postgres() -> PgConnection {
 const INIT_MYSQL: &str = "
 ";
 
-fn connect_mysql() -> MysqlConnection {
-    let database_url = env::var("DATABASE_URL")
-        .expect("DATABASE_URL must be set");
+fn connect_mysql(conf: &Conf) -> MysqlConnection {
+    let database_url = &conf.database.path;
     MysqlConnection::establish(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
 }
@@ -71,8 +68,8 @@ fn timestamp() -> String {
     time::now().to_local().ctime().to_string()
 }
 
-pub fn insert_url(url: &str) -> Result<String, Error> {
-    let connection = connect_sqlite();
+pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
+    let connection = connect_sqlite(conf);
 
     let id = urls::table
         .count()
@@ -97,8 +94,8 @@ pub fn insert_url(url: &str) -> Result<String, Error> {
     }
 }
 
-pub fn get_url(hash: &str) -> Result<String, Error> {
-    let connection = connect_sqlite();
+pub fn get_url(conf: &Conf, hash: &str) -> Result<String, Error> {
+    let connection = connect_sqlite(conf);
 
     let id = match decode(hash) {
         Some(h) => h,

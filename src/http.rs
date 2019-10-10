@@ -6,6 +6,7 @@ use router::Router;
 use params::{Params, Value};
 use std::process;
 use url::Url;
+use std::sync::Arc;
 
 use crate::db::{insert_url, get_url};
 use crate::conf::Conf;
@@ -14,12 +15,12 @@ fn index() -> String {
     String::from("index")
 }
 
-fn shorten(link: &str, base: &str) -> String {
+fn shorten(conf: &Conf, link: &str, base: &str) -> String {
     if link.parse::<Url>().is_err() {
         return String::from(format!("{} '{}'", "invalid URL", link));
     };
 
-    let hash = match insert_url(link) {
+    let hash = match insert_url(conf, link) {
         Ok(h) => h,
         Err(e) => {
             error!("adding URL to database: {}", e); "".to_string();
@@ -30,7 +31,7 @@ fn shorten(link: &str, base: &str) -> String {
     format!("<a href=\"{}{}\">{}{}</a>", base, hash, base, hash)
 }
 
-fn submit(req: &mut Request) -> IronResult<Response> {
+fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let html = "text/html".parse::<mime::Mime>().unwrap();
 
     let mut req_url: Url = req.url.clone().into();
@@ -43,20 +44,20 @@ fn submit(req: &mut Request) -> IronResult<Response> {
     match params.find(&["url"]) {
         Some(&Value::String(ref link)) => {
             info!("submission: <{}> from {}", link, client_addr);
-            Ok(Response::with((html, StatusOk, shorten(link, &req_url))))
+            Ok(Response::with((html, StatusOk, shorten(conf, link, &req_url))))
         },
         _ => Ok(Response::with((StatusOk, index()))),
     }
 }
 
-fn redirect(req: &mut Request) -> IronResult<Response> {
+fn redirect(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let ref query = req.extensions
         .get::<Router>()
         .unwrap()
         .find("hash")
         .unwrap_or("/");
 
-    match get_url(query) {
+    match get_url(conf, query) {
         Ok(l) => {
             let url = iron::Url::parse(&l).unwrap();
             Ok(Response::with((Found, Redirect(url))))
@@ -72,11 +73,11 @@ fn not_found(_: &mut Request) -> IronResult<Response> {
     Ok(Response::with(NotFound))
 }
 
-pub fn listen(conf: &Conf) {
+pub fn listen(conf: Arc<Conf>) {
     let router = router!{
-        submit: get "/" => submit,
+        submit: get "/" => move |request: &mut Request| submit(conf, request),
+        redirect: get "/:hash" => move |request: &mut Request| redirect(conf, request),
         favicon: get "/favicon.ico" => not_found,
-        redirect: get "/:hash" => redirect,
     };
 
     let bind = format!("{}:{}", conf.settings.bind, conf.settings.port);
