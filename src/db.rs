@@ -1,10 +1,11 @@
+use std::sync::Arc;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use diesel::sqlite::SqliteConnection;
 use diesel::mysql::MysqlConnection;
 use diesel::connection::SimpleConnection;
-use time;
 use failure::Error;
+use time;
 
 use crate::db_models::*;
 use crate::db_schema::*;
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS urls (
     hits            INTEGER
 );";
 
-fn connect_sqlite(conf: &Conf) -> SqliteConnection {
+fn connect_sqlite(conf: Arc<&Conf>) -> SqliteConnection {
     let database_path = &conf.database.path;
     let connection = SqliteConnection::establish(&database_path)
         .expect(&format!("Error connecting to {}", database_path));
@@ -68,8 +69,8 @@ fn timestamp() -> String {
     time::now().to_local().ctime().to_string()
 }
 
-pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
-    let connection = connect_sqlite(conf);
+pub fn insert_url(conf: Arc<&Conf>, url: &str) -> Result<String, Error> {
+    let connection = connect_sqlite(Arc::clone(&conf));
 
     let id = urls::table
         .count()
@@ -94,8 +95,8 @@ pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
     }
 }
 
-pub fn get_url(conf: &Conf, hash: &str) -> Result<String, Error> {
-    let connection = connect_sqlite(conf);
+pub fn get_url(conf: Arc<&Conf>, hash: &str) -> Result<String, Error> {
+    let connection = connect_sqlite(Arc::clone(&conf));
 
     let id = match decode(hash) {
         Some(h) => h,

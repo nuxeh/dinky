@@ -23,6 +23,8 @@ extern crate diesel;
 extern crate time;
 #[macro_use]
 extern crate failure;
+#[macro_use]
+extern crate lazy_static;
 
 mod conf;
 mod db;
@@ -35,12 +37,12 @@ use atty::{is, Stream};
 use docopt::Docopt;
 use std::process;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 use stderrlog::{ColorChoice, Timestamp};
 use directories::{ProjectDirs, BaseDirs};
 use failure::Error;
 use std::fs;
 use conf::Conf;
-use std::sync::Arc;
 
 const USAGE: &str = "
 Link shortening service.
@@ -103,14 +105,24 @@ fn main() {
         error!("initialising config: {}", e);
         process::exit(1);
     });
-    let config = Arc::new(Conf::load(&conf_path).unwrap_or_else(|e| {
+    let config = Conf::load(&conf_path).unwrap_or_else(|e| {
         error!("loading config: {}", e);
         process::exit(1);
-    }));
+    });
 
-    println!("{:#?}", config);
+    lazy_static! {
+        static ref CFG: Conf = |path: &PathBuf| {
+            Conf::load(path).unwrap_or_else(|e| {
+                error!("loading config: {}", e);
+                process::exit(1);
+            })
+        };
+    };
 
-    http::listen(config);
+    println!("{:#?}", *CFG);
+
+    let cfg = Arc::new(&*CFG);
+    http::listen(cfg);
 }
 
 fn expand_tilde(path: &Path) -> PathBuf {
