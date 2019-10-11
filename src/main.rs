@@ -37,7 +37,6 @@ use atty::{is, Stream};
 use docopt::Docopt;
 use std::process;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
 use stderrlog::{ColorChoice, Timestamp};
 use directories::{ProjectDirs, BaseDirs};
 use failure::Error;
@@ -110,19 +109,12 @@ fn main() {
         process::exit(1);
     });
 
-    lazy_static! {
-        static ref CFG: Conf = |path: &PathBuf| {
-            Conf::load(path).unwrap_or_else(|e| {
-                error!("loading config: {}", e);
-                process::exit(1);
-            })
-        };
-    };
+    // Allocate on heap and leak to get a static ref
+    let conf_static: &'static Conf = Box::leak(Box::new(config));
 
-    println!("{:#?}", *CFG);
+    println!("{:#?}", conf_static);
 
-    let cfg = Arc::new(&*CFG);
-    http::listen(cfg);
+    http::listen(conf_static);
 }
 
 fn expand_tilde(path: &Path) -> PathBuf {

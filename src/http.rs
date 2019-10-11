@@ -5,7 +5,6 @@ use iron::modifiers::Redirect;
 use router::Router;
 use params::{Params, Value};
 use std::process;
-use std::sync::Arc;
 use url::Url;
 
 use crate::db::{insert_url, get_url};
@@ -15,7 +14,7 @@ fn index() -> String {
     String::from("index")
 }
 
-fn shorten(conf: Arc<&Conf>, link: &str, base: &str) -> String {
+fn shorten(conf: &Conf, link: &str, base: &str) -> String {
     if link.parse::<Url>().is_err() {
         return String::from(format!("{} '{}'", "invalid URL", link));
     };
@@ -31,7 +30,7 @@ fn shorten(conf: Arc<&Conf>, link: &str, base: &str) -> String {
     format!("<a href=\"{}{}\">{}{}</a>", base, hash, base, hash)
 }
 
-fn submit(conf: Arc<&Conf>, req: &mut Request) -> IronResult<Response> {
+fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let html = "text/html".parse::<mime::Mime>().unwrap();
 
     let mut req_url: Url = req.url.clone().into();
@@ -50,7 +49,7 @@ fn submit(conf: Arc<&Conf>, req: &mut Request) -> IronResult<Response> {
     }
 }
 
-fn redirect(conf: Arc<&Conf>, req: &mut Request) -> IronResult<Response> {
+fn redirect(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let ref query = req.extensions
         .get::<Router>()
         .unwrap()
@@ -73,14 +72,13 @@ fn not_found(_: &mut Request) -> IronResult<Response> {
     Ok(Response::with(NotFound))
 }
 
-pub fn listen(conf: Arc<&'static Conf>) {
+pub fn listen(conf: &'static Conf) {
 
     let bind = format!("{}:{}", conf.settings.bind, conf.settings.port);
 
     let mut router = Router::new();
-    let a = conf.clone();
     // FnOnce + static requirement - no borrow, only move
-    router.get("/", move |request: &mut Request| submit(a.clone(), request), "submit");
+    router.get("/", move |request: &mut Request| submit(conf, request), "submit");
     /*
     let router = router!{
         submit: get "/" => move |request: &mut Request| submit(Arc::clone(&conf), request),
