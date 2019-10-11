@@ -76,16 +76,12 @@ pub fn listen(conf: &'static Conf) {
 
     let bind = format!("{}:{}", conf.settings.bind, conf.settings.port);
 
-    let mut router = Router::new();
     // FnOnce + static requirement - no borrow, only move
-    router.get("/", move |request: &mut Request| submit(conf, request), "submit");
-    /*
     let router = router!{
-        submit: get "/" => move |request: &mut Request| submit(Arc::clone(&conf), request),
-        redirect: get "/:hash" => move |request: &mut Request| redirect(Arc::clone(&conf), request),
+        submit: get "/" => move |request: &mut Request| submit(conf, request),
+        redirect: get "/:hash" => move |request: &mut Request| redirect(conf, request),
         favicon: get "/favicon.ico" => not_found,
     };
-    */
 
     info!("dinky starting on {}", bind);
 
