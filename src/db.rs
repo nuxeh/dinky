@@ -71,13 +71,12 @@ fn timestamp() -> String {
 pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
     let connection = connect_sqlite(conf);
 
-    let id = urls::table
+    let count: i64 = urls::table
         .count()
-        .get_result(&connection)
-        .unwrap_or(0) as i32;
+        .get_result(&connection)?;
 
     let entry = NewUrl {
-        id: id,
+        id: count as i32,
         url: url,
         created: &timestamp(),
         accessed: "",
@@ -88,9 +87,9 @@ pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
         .values(&entry)
         .execute(&connection)?;
 
-    match encode(id) {
+    match encode(count as i32) {
         Some(h) => Ok(h),
-        None => bail!("Can't encode hash for id {}", id),
+        None => bail!("Can't encode hash for id {}", count),
     }
 }
 
