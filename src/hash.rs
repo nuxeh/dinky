@@ -33,6 +33,7 @@ mod tests {
 
     #[test]
     fn test_encode() {
+        assert_eq!(encode(0), Some(String::from("7ma6kjJ8Aj")));
         assert_eq!(encode(1), Some(String::from("adVJAB6Ej3")));
         assert_eq!(encode(2), Some(String::from("lDjr2br8Bm")));
         assert_eq!(encode(3), Some(String::from("ZjV6d06Mw2")));

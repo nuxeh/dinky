@@ -71,6 +71,7 @@ impl Conf {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     /// test that the example configuration file parses without error
