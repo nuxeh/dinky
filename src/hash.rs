@@ -4,7 +4,6 @@ use harsh::HarshBuilder;
 
 use crate::conf::Conf;
 
-//pub fn encode(cfg: &Config, id: usize) -> String {
 pub fn encode(conf: &Conf, id: i32) -> Option<String> {
     let h = HarshBuilder::new()
         .salt(conf.hash.salt.clone())

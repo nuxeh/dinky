@@ -23,8 +23,6 @@ extern crate diesel;
 extern crate time;
 #[macro_use]
 extern crate failure;
-#[macro_use]
-extern crate lazy_static;
 
 mod conf;
 mod db;
@@ -112,7 +110,9 @@ fn main() {
     // Allocate on heap and leak to get a static ref
     let conf_static: &'static Conf = Box::leak(Box::new(config));
 
-    println!("{:#?}", conf_static);
+    if args.flag_verbose > 0 {
+        info!("{:#?}", conf_static);
+    }
 
     http::listen(conf_static);
 }

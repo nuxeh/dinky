@@ -8,24 +8,18 @@ use std::process;
 use url::Url;
 use failure::Error;
 
-use crate::db::{insert_url, get_url};
+use crate::db;
 use crate::conf::Conf;
 
 fn index() -> String {
     String::from("index")
 }
 
-lazy_static!(
-    static ref HTML: mime::Mime = "text/html".parse().unwrap();
-);
-
 fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
     if link.parse::<Url>().is_err() {
         bail!("{} '{}'", "invalid URL", link);
     };
-
-    let hash = insert_url(conf, link)?;
-
+    let hash = db::insert_url(conf, link)?;
     Ok(format!("<a href=\"{}{}\">{}{}</a>", base, hash, base, hash))
 }
 
@@ -58,7 +52,7 @@ fn redirect(conf: &Conf, req: &mut Request) -> IronResult<Response> {
         .find("hash")
         .unwrap_or("/");
 
-    match get_url(conf, query) {
+    match db::get_url(conf, query) {
         Ok(l) => {
             let url = iron::Url::parse(&l).unwrap();
             Ok(Response::with((Found, Redirect(url))))
