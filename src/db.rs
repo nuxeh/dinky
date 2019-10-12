@@ -120,6 +120,8 @@ pub fn get_url(conf: &Conf, hash: &str) -> Result<String, Error> {
             .unwrap();
     };
 
+
+    warn!("{}", result.len());
     match result.len() {
         1 => Ok(result[0].url.clone()),
         _ => bail!("can't find entry for '{}' (id {})", hash, id),

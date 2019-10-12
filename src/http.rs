@@ -6,6 +6,7 @@ use router::Router;
 use params::{Params, Value};
 use std::process;
 use url::Url;
+use failure::Error;
 
 use crate::db::{insert_url, get_url};
 use crate::conf::Conf;
@@ -14,24 +15,23 @@ fn index() -> String {
     String::from("index")
 }
 
-fn shorten(conf: &Conf, link: &str, base: &str) -> String {
+lazy_static!(
+    static ref HTML: mime::Mime = "text/html".parse().unwrap();
+);
+
+fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
     if link.parse::<Url>().is_err() {
-        return String::from(format!("{} '{}'", "invalid URL", link));
+        bail!("{} '{}'", "invalid URL", link);
     };
 
-    let hash = match insert_url(conf, link) {
-        Ok(h) => h,
-        Err(e) => {
-            error!("adding URL to database: {}", e); "".to_string();
-            return "Database error.".to_string();
-        },
-    };
+    let hash = insert_url(conf, link)?;
 
-    format!("<a href=\"{}{}\">{}{}</a>", base, hash, base, hash)
+    Ok(format!("<a href=\"{}{}\">{}{}</a>", base, hash, base, hash))
 }
 
 fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let html = "text/html".parse::<mime::Mime>().unwrap();
+    let plain = "text/plain".parse::<mime::Mime>().unwrap();
 
     let mut req_url: Url = req.url.clone().into();
     req_url.set_query(None);
@@ -42,8 +42,11 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
 
     match params.find(&["url"]) {
         Some(&Value::String(ref link)) => {
-            info!("submission: <{}> from {}", link, client_addr);
-            Ok(Response::with((html, StatusOk, shorten(conf, link, &req_url))))
+            info!("submission <{}> from {}", link, client_addr);
+            match shorten(conf, link, &req_url) {
+                Ok(l) => Ok(Response::with((html, StatusOk, l))),
+                Err(e) => Ok(Response::with((plain, StatusOk, e.display()))),
+            }
         },
         _ => Ok(Response::with((StatusOk, index()))),
     }
