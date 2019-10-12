@@ -21,7 +21,7 @@ pub struct Hash {
     pub salt: String,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Database {
     pub kind: DbType,
@@ -46,6 +46,15 @@ impl Default for Hash {
     }
 }
 
+impl Default for Database {
+    fn default() -> Self {
+        Self {
+            kind: DbType::Sqlite,
+            path: "example_db".to_string(),
+        }
+    }
+}
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Conf {
@@ -58,7 +67,13 @@ impl Conf {
     pub fn load(path: impl AsRef<Path>) -> Result<Self, Error> {
         let conf = fs::read_to_string(path.as_ref())?;
         let conf: Conf = toml::de::from_str(&conf)?;
+        conf.validate()?;
         Ok(conf)
+    }
+
+    pub fn validate(&self) -> Result<(), Error> {
+        if self.database.path.is_empty() {bail!("database.path can't be empty")}
+        Ok(())
     }
 
     pub fn write(&self, path: impl AsRef<Path>) -> Result<(), Error> {

@@ -18,10 +18,6 @@ pub enum DbType {
     Mysql,
 }
 
-impl Default for DbType {
-    fn default() -> Self { DbType::Sqlite }
-}
-
 #[derive(Default)]
 pub struct Database {
     pub pg_connection: Option<PgConnection>,
@@ -38,12 +34,10 @@ CREATE TABLE IF NOT EXISTS urls (
     hits            INTEGER
 );";
 
-fn connect_sqlite(conf: &Conf) -> SqliteConnection {
-    let database_path = &conf.database.path;
-    let connection = SqliteConnection::establish(&database_path)
-        .expect(&format!("Error connecting to {}", database_path));
-    connection.batch_execute(INIT_SQLITE).unwrap();
-    connection
+fn connect_sqlite(conf: &Conf) -> Result<SqliteConnection, Error> {
+    let connection = SqliteConnection::establish(&conf.database.path)?;
+    connection.batch_execute(INIT_SQLITE)?;
+    Ok(connection)
 }
 
 const INIT_POSTGRES: &str = "
@@ -69,7 +63,7 @@ fn timestamp() -> String {
 }
 
 pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
-    let connection = connect_sqlite(conf);
+    let connection = connect_sqlite(conf)?;
 
     let count: i64 = urls::table
         .count()
@@ -87,16 +81,16 @@ pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
         .values(&entry)
         .execute(&connection)?;
 
-    match encode(count as i32) {
+    match encode(conf, count as i32) {
         Some(h) => Ok(h),
         None => bail!("Can't encode hash for id {}", count),
     }
 }
 
 pub fn get_url(conf: &Conf, hash: &str) -> Result<String, Error> {
-    let connection = connect_sqlite(conf);
+    let connection = connect_sqlite(conf)?;
 
-    let id = match decode(hash) {
+    let id = match decode(conf, hash) {
         Some(h) => h,
         None => bail!("can't decode hash '{}'", hash),
     };
@@ -119,8 +113,6 @@ pub fn get_url(conf: &Conf, hash: &str) -> Result<String, Error> {
             .unwrap();
     };
 
-
-    warn!("{}", result.len());
     match result.len() {
         1 => Ok(result[0].url.clone()),
         _ => bail!("can't find entry for '{}' (id {})", hash, id),
