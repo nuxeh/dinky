@@ -1,7 +1,7 @@
 use diesel::prelude::*;
-use diesel::pg::PgConnection;
 use diesel::sqlite::SqliteConnection;
-use diesel::mysql::MysqlConnection;
+//use diesel::pg::PgConnection;
+//use diesel::mysql::MysqlConnection;
 use diesel::connection::SimpleConnection;
 use failure::Error;
 use time;
@@ -18,12 +18,14 @@ pub enum DbType {
     Mysql,
 }
 
+/*
 #[derive(Default)]
 pub struct Database {
     pub pg_connection: Option<PgConnection>,
     pub sqlite_connection: Option<PgConnection>,
     pub mysql_connection: Option<MysqlConnection>,
 }
+*/
 
 const INIT_SQLITE: &str = "
 CREATE TABLE IF NOT EXISTS urls (
