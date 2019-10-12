@@ -83,7 +83,7 @@ pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
 
     match encode(conf, count as i32) {
         Some(h) => Ok(h),
-        None => bail!("Can't encode hash for id {}", count),
+        None => bail!("can't encode hash"),
     }
 }
 
