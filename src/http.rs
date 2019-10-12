@@ -46,7 +46,7 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
 }
 
 fn redirect(conf: &Conf, req: &mut Request) -> IronResult<Response> {
-    let ref query = req.extensions
+    let query = &req.extensions
         .get::<Router>()
         .unwrap()
         .find("hash")

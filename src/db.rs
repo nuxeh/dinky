@@ -40,6 +40,7 @@ fn connect_sqlite(conf: &Conf) -> Result<SqliteConnection, Error> {
     Ok(connection)
 }
 
+/*
 const INIT_POSTGRES: &str = "
 ";
 
@@ -57,6 +58,7 @@ fn connect_mysql(conf: &Conf) -> MysqlConnection {
     MysqlConnection::establish(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
 }
+*/
 
 fn timestamp() -> String {
     time::now().to_local().ctime().to_string()
@@ -71,7 +73,7 @@ pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
 
     let entry = NewUrl {
         id: count as i32,
-        url: url,
+        url,
         created: &timestamp(),
         accessed: "",
         hits: 0,
