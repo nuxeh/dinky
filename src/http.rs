@@ -31,7 +31,6 @@ fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
 
 fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let html = "text/html".parse::<mime::Mime>().unwrap();
-    let plain = "text/plain".parse::<mime::Mime>().unwrap();
 
     let mut req_url: Url = req.url.clone().into();
     req_url.set_query(None);
@@ -45,7 +44,7 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
             info!("submission <{}> from {}", link, client_addr);
             match shorten(conf, link, &req_url) {
                 Ok(l) => Ok(Response::with((html, StatusOk, l))),
-                Err(e) => Ok(Response::with((plain, StatusOk, e.display()))),
+                Err(e) => Ok(Response::with((StatusOk, format!("{}", e)))),
             }
         },
         _ => Ok(Response::with((StatusOk, index()))),
