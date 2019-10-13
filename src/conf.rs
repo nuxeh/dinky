@@ -35,7 +35,7 @@ impl Default for Settings {
         Self {
             port: 4444,
             bind: "127.0.0.1".to_string(),
-            base_url: String::new(),
+            base_url: "http://example.com/".to_string(),
         }
     }
 }

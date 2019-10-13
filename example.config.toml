@@ -1,7 +1,7 @@
 [settings]
 bind = "127.0.0.1"
 port = 4444
-base_url = ""
+base_url = "http://example.com/"
 
 [hash]
 length = 10
