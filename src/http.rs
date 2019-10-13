@@ -17,7 +17,7 @@ fn index() -> String {
 
 fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
     if link.parse::<Url>().is_err() {
-        bail!("{} '{}'", "invalid URL", link);
+        bail!("invalid URL '{}'", link);
     };
     let hash = db::insert_url(conf, link)?;
     Ok(format!("<a href=\"{}{}\">{}{}</a>", base, hash, base, hash))
