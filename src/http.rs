@@ -26,9 +26,13 @@ fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
 fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let html = "text/html".parse::<mime::Mime>().unwrap();
 
-    let mut req_url: Url = req.url.clone().into();
-    req_url.set_query(None);
-    let req_url = req_url.into_string();
+    let req_url = if conf.settings.base_url.is_empty() {
+        let mut req_url: Url = req.url.clone().into();
+        req_url.set_query(None);
+        req_url.into_string()
+    } else {
+        conf.settings.base_url.clone()
+    };
 
     let client_addr = req.remote_addr;
     let params = req.get_ref::<Params>().unwrap();

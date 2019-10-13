@@ -3,6 +3,7 @@ use std::path::Path;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
+use url::Url;
 use toml;
 
 use crate::db::DbType;
@@ -12,6 +13,7 @@ use crate::db::DbType;
 pub struct Settings {
     pub bind: String,
     pub port: usize,
+    pub base_url: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -33,6 +35,7 @@ impl Default for Settings {
         Self {
             port: 4444,
             bind: "127.0.0.1".to_string(),
+            base_url: String::new(),
         }
     }
 }
@@ -73,6 +76,7 @@ impl Conf {
 
     pub fn validate(&self) -> Result<(), Error> {
         if self.database.path.is_empty() {bail!("database.path can't be empty")}
+        self.settings.base_url.parse::<Url>()?;
         Ok(())
     }
 
