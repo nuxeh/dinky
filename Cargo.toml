@@ -1,8 +1,10 @@
 [package]
 name = "dinky"
 version = "0.1.0"
-authors = ["Edward Cragg <drq.11235@gmail.com>"]
+authors = ["Edward Cragg <ed@eipi.xyz>"]
 edition = "2018"
+keywords = ["short", "link", "shortening", "service"]
+repository = "https://github.com/nuxeh/dinky"
 
 [dev-dependencies]
 diff = "0.1.11"
@@ -23,5 +25,4 @@ directories = "2.0.2"
 failure = "0.1.5"
 toml = "0.5.3"
 time = "0.1.42"
-lazy_static = "1.4.0"
 diesel = { version = "1.4.2", features = ["sqlite"] }
