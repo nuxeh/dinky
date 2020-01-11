@@ -1,0 +1,40 @@
+body
+{
+	background: #222222;
+	font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+	font-size: small;
+	text-align: center;
+}
+
+#dinky-container
+{
+	background: #ccc;
+	text-align: left;
+  margin: auto auto;
+	padding: 20px 20px 20px;
+	width: 50%;
+  border-radius: 5px;
+}
+
+#dinky-form
+{
+  margin: 0;
+  width: 100%;
+}
+
+#dinky-text
+{
+  width: 100%;
+}
+
+#dinky-button-container
+{
+  padding-top: 5px;
+  text-align: right;
+}
+
+#dinky-footer
+{
+  color: white;
+  padding-top: 5px;
+}
