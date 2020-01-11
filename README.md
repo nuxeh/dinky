@@ -77,13 +77,15 @@ Within the template HTML, `{{content}}` is replaced with the form HTML, or any
 other content or messages that dinky serves. Additionally, `{{ver}}` is
 replaced with the current version of d`dinky`.
 
-## Manual systemd setup
+## Installation as a service with Cargo and systemd
 
 To set up systemd manually, the unit file must be copied, and the `dinky`
 user must be created on the system. From inside the project repository:
 
-    sudo install -m 644 systemd/dinky.service /etc/systemd/system/
+    cargo install dinky
     sudo useradd -m --system dinky --shell /usr/sbin/nologin
+    sudo install -D -o dinky -g dinky ~/.cargo/bin/dinky -t /home/dinky/.cargo/bin/
+    sudo install -m 644 systemd/dinky.service /etc/systemd/system/
     sudo systemctl enable --now dinky.service
 
 ## Use with nginx

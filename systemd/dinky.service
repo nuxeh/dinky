@@ -5,7 +5,7 @@ Requires=network.target
 
 [Service]
 User=dinky
-ExecStart=/home/<you>/.cargo/bin/dinky
+ExecStart=/home/dinky/.cargo/bin/dinky
 Restart=always
 RestartSec=10
 
