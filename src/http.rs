@@ -24,6 +24,7 @@ fn index(conf: &Conf, content: &str) -> String {
 
     let page = page
         .unwrap_or(String::from(DEFAULT_INDEX))
+        .replace("{{ver}}", CRATE_VERSION)
         .replace("{{content}}", content);
 
     page
