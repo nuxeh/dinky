@@ -3,6 +3,7 @@
 ## v0.2.1
 
 - Upgrade dependencies
+- Cargo update
 
 ## v0.2.0
 
