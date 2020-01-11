@@ -22,6 +22,7 @@ pub struct Index {
     pub enable: bool,
     pub html: PathBuf,
     pub css: PathBuf,
+    pub form: PathBuf,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
