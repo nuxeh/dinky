@@ -29,8 +29,20 @@ fn index(conf: &Conf, content: &str) -> String {
     page
 }
 
-fn css() -> IronResult<Response> {
-    Ok(Response::with((StatusOk, DEFAULT_CSS)))
+fn css(conf: &Conf) -> IronResult<Response> {
+    let css = if let Some(c) = &conf.index.css {
+        read_to_string(c).ok()
+    } else {
+        None
+    };
+
+    let css = if let Some(c) = &css {
+        c.as_str()
+    } else {
+        DEFAULT_CSS
+    };
+
+    Ok(Response::with((StatusOk, css)))
 }
 
 fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
@@ -96,14 +108,13 @@ fn not_found(_: &mut Request) -> IronResult<Response> {
 }
 
 pub fn listen(conf: &'static Conf) {
-
     let bind = format!("{}:{}", conf.settings.bind, conf.settings.port);
 
     // FnOnce + static requirement - no borrow, only move
     let router = router!{
         submit: get "/" => move |request: &mut Request| submit(conf, request),
         redirect: get "/:hash" => move |request: &mut Request| redirect(conf, request),
-        css: get "/dinky.css" => move |_: &mut Request| css(),
+        css: get "/dinky.css" => move |_: &mut Request| css(conf),
         favicon: get "/favicon.ico" => not_found,
     };
 
