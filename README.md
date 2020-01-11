@@ -8,6 +8,8 @@ A basic, self-hosted, link shortening service.
 
 ## Build
 
+    git clone https://github.com/nuxeh/dinky.git
+    cd dinky
     cargo build
 
 ## Test
