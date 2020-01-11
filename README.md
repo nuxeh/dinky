@@ -2,6 +2,8 @@
 
 A basic, self-hosted, link shortening service.
 
+![dinky](./dinky.png "dinky preview")
+
 ## Install
 
     cargo install dinky
