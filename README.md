@@ -21,7 +21,7 @@ Usage information can be provided with `--help`.
 ## Configuration
 
 There is a configuration file (in TOML format), which will be created in a
-default XDG path if not specified with the `--conf` parameter.
+default XDG path if a path is not specified with the `--conf` CLI parameter.
 
 In the case that dinky writes out the configuration, it will be populated with
 default values, and is therefore a good place to start from. The name of the
