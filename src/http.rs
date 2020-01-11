@@ -29,7 +29,8 @@ fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
         bail!("invalid URL '{}'", link);
     };
     let hash = db::insert_url(conf, link)?;
-    Ok(format!("<a href=\"{}{}\">{}{}</a>", base, hash, base, hash))
+    let url = format!("{}{}", base, hash);
+    Ok(format!(r#"<a href="{}" id="dinky-link">{}</a>"#, url, url))
 }
 
 fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
@@ -50,7 +51,7 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
         Some(&Value::String(ref link)) => {
             info!("submission <{}> from {}", link, client_addr);
             match shorten(conf, link, &req_url) {
-                Ok(l) => l,
+                Ok(l) => index(&l),
                 Err(e) => index(&format!("{}", e)),
             }
         },
