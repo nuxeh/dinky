@@ -93,6 +93,12 @@ user must be created on the system. From inside the project repository:
 When being run as a service, `dinky` may be proxied using nginx, e.g. as
 follows:
 
+    location /some/path/ {
+        proxy_pass http://127.0.0.1:4444/;
+    }
+
+See [the nginx docs](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/).
+
 ## Preview
 
 ![dinky](./dinky.png "dinky preview")
