@@ -1,15 +1,15 @@
+use diesel::connection::SimpleConnection;
+//use diesel::mysql::MysqlConnection;
+//use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
-//use diesel::pg::PgConnection;
-//use diesel::mysql::MysqlConnection;
-use diesel::connection::SimpleConnection;
 use failure::Error;
 use time;
 
+use crate::conf::Conf;
 use crate::db_models::*;
 use crate::db_schema::*;
 use crate::hash::{encode, decode};
-use crate::conf::Conf;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DbType {

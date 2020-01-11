@@ -1,10 +1,10 @@
 use failure::Error;
-use std::path::{Path, PathBuf};
-use std::fs;
 use std::fs::File;
+use std::fs;
 use std::io::Write;
-use url::Url;
+use std::path::{Path, PathBuf};
 use toml;
+use url::Url;
 
 use crate::db::DbType;
 

@@ -1,16 +1,16 @@
-use iron::prelude::*;
+use failure::Error;
 use iron::mime;
-use iron::status::{Found, NotFound, Ok as StatusOk};
 use iron::modifiers::Redirect;
-use router::Router;
+use iron::prelude::*;
+use iron::status::{Found, NotFound, Ok as StatusOk};
 use params::{Params, Value};
+use router::Router;
+use std::fs::read_to_string;
 use std::process;
 use url::Url;
-use failure::Error;
-use std::fs::read_to_string;
 
-use crate::db;
 use crate::conf::Conf;
+use crate::db;
 
 // pull in static index content
 include!(concat!(env!("OUT_DIR"), "/index.rs"));
