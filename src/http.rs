@@ -29,6 +29,16 @@ fn index(conf: &Conf, content: &str) -> String {
     page
 }
 
+fn form(conf: &Conf) -> String {
+    let form = if let Some(t) = &conf.index.form {
+        read_to_string(t).ok()
+    } else {
+        None
+    };
+
+    form.unwrap_or(String::from(DEFAULT_FORM))
+}
+
 fn css(conf: &Conf) -> IronResult<Response> {
     let css = if let Some(c) = &conf.index.css {
         read_to_string(c).ok()
@@ -76,7 +86,7 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
                 Err(e) => index(&conf, &format!("{}", e)),
             }
         },
-        _ => index(&conf, DEFAULT_FORM),
+        _ => index(&conf, &form(conf)),
     };
 
     Ok(Response::with((html, StatusOk, resp)))
