@@ -49,10 +49,11 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     match params.find(&["url"]) {
         Some(&Value::String(ref link)) => {
             info!("submission <{}> from {}", link, client_addr);
-            match shorten(conf, link, &req_url) {
-                Ok(l) => Ok(Response::with((html, StatusOk, l))),
-                Err(e) => Ok(Response::with((StatusOk, format!("{}", e)))),
-            }
+            let resp = match shorten(conf, link, &req_url) {
+                Ok(l) => l,
+                Err(e) => index(&format!("{}", e)),
+            };
+            Ok(Response::with((html, StatusOk, resp)))
         },
         _ => Ok(Response::with((html, StatusOk, index(DEFAULT_FORM)))),
     }
