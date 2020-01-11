@@ -1,10 +1,12 @@
 [package]
 name = "dinky"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Edward Cragg <ed@eipi.xyz>"]
 edition = "2018"
-keywords = ["short", "link", "shortening", "service"]
 repository = "https://github.com/nuxeh/dinky"
+license = "ISC"
+description = "A simple link shortening service"
+keywords = ["short", "link", "shortening", "service"]
 
 [dev-dependencies]
 diff = "0.1.11"
