@@ -7,6 +7,7 @@ use params::{Params, Value};
 use std::process;
 use url::Url;
 use failure::Error;
+use std::fs::read_to_string;
 
 use crate::db;
 use crate::conf::Conf;
@@ -14,9 +15,17 @@ use crate::conf::Conf;
 // pull in static index content
 include!(concat!(env!("OUT_DIR"), "/index.rs"));
 
-fn index(content: &str) -> String {
-    let page = String::from(DEFAULT_INDEX)
+fn index(conf: &Conf, content: &str) -> String {
+    let page = if let Some(t) = &conf.index.html {
+        read_to_string(t).ok()
+    } else {
+        None
+    };
+
+    let page = page
+        .unwrap_or(String::from(DEFAULT_INDEX))
         .replace("{{content}}", content);
+
     page
 }
 
@@ -51,11 +60,11 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
         Some(&Value::String(ref link)) => {
             info!("submission <{}> from {}", link, client_addr);
             match shorten(conf, link, &req_url) {
-                Ok(l) => index(&l),
-                Err(e) => index(&format!("{}", e)),
+                Ok(l) => index(&conf, &l),
+                Err(e) => index(&conf, &format!("{}", e)),
             }
         },
-        _ => index(DEFAULT_FORM),
+        _ => index(&conf, DEFAULT_FORM),
     };
 
     Ok(Response::with((html, StatusOk, resp)))

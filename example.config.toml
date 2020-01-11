@@ -13,5 +13,3 @@ path = "example_db"
 
 [index]
 enable = false
-html = ""
-css = ""

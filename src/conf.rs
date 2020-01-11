@@ -20,9 +20,9 @@ pub struct Settings {
 #[serde(default)]
 pub struct Index {
     pub enable: bool,
-    pub html: PathBuf,
-    pub css: PathBuf,
-    pub form: PathBuf,
+    pub html: Option<PathBuf>,
+    pub css: Option<PathBuf>,
+    pub form: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
