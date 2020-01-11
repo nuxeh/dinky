@@ -5,24 +5,19 @@
  *
  */
 
+#[macro_use] extern crate log;
+#[macro_use] extern crate serde_derive;
+#[macro_use] extern crate router;
+#[macro_use] extern crate diesel;
+#[macro_use] extern crate failure;
 extern crate docopt;
-#[macro_use]
-extern crate log;
 extern crate atty;
 extern crate stderrlog;
-#[macro_use]
-extern crate serde_derive;
 extern crate iron;
-#[macro_use]
-extern crate router;
 extern crate params;
 extern crate url;
 extern crate directories;
-#[macro_use]
-extern crate diesel;
 extern crate time;
-#[macro_use]
-extern crate failure;
 
 mod conf;
 mod db;
@@ -107,7 +102,7 @@ fn main() {
         process::exit(1);
     });
 
-    // Allocate on heap and leak to get a static ref
+    // allocate on heap and leak to get a static ref
     let conf_static: &'static Conf = Box::leak(Box::new(config));
 
     if args.flag_verbose > 0 {
