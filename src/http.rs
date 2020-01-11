@@ -14,8 +14,10 @@ use crate::conf::Conf;
 // pull in static index content
 include!(concat!(env!("OUT_DIR"), "/index.rs"));
 
-fn index() -> String {
-    String::from(DEFAULT_INDEX)
+fn index(content: &str) -> String {
+    let page = String::from(DEFAULT_INDEX)
+        .replace("{{content}}", content);
+    page
 }
 
 fn css() -> IronResult<Response> {
@@ -52,7 +54,7 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
                 Err(e) => Ok(Response::with((StatusOk, format!("{}", e)))),
             }
         },
-        _ => Ok(Response::with((StatusOk, index()))),
+        _ => Ok(Response::with((html, StatusOk, index(DEFAULT_FORM)))),
     }
 }
 
