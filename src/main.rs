@@ -5,36 +5,36 @@
  *
  */
 
-#[macro_use] extern crate log;
-#[macro_use] extern crate serde_derive;
-#[macro_use] extern crate router;
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate failure;
-extern crate docopt;
+#[macro_use] extern crate log;
+#[macro_use] extern crate router;
+#[macro_use] extern crate serde_derive;
 extern crate atty;
-extern crate stderrlog;
+extern crate directories;
+extern crate docopt;
 extern crate iron;
 extern crate params;
-extern crate url;
-extern crate directories;
+extern crate stderrlog;
 extern crate time;
+extern crate url;
 
 mod conf;
 mod db;
-mod db_schema;
 mod db_models;
+mod db_schema;
 mod hash;
 mod http;
 
 use atty::{is, Stream};
-use docopt::Docopt;
-use std::process;
-use std::path::{Path, PathBuf};
-use stderrlog::{ColorChoice, Timestamp};
+use conf::Conf;
 use directories::{ProjectDirs, BaseDirs};
+use docopt::Docopt;
 use failure::Error;
 use std::fs;
-use conf::Conf;
+use std::path::{Path, PathBuf};
+use std::process;
+use stderrlog::{ColorChoice, Timestamp};
 
 const USAGE: &str = "
 Link shortening service.
