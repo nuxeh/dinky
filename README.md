@@ -2,8 +2,6 @@
 
 A basic, self-hosted, link shortening service.
 
-![dinky](./dinky.png "dinky preview")
-
 ## Install
 
     cargo install dinky
@@ -92,3 +90,7 @@ user must be created on the system. From inside the project repository:
 
 When being run as a service, `dinky` may be proxied using nginx, e.g. as
 follows:
+
+## Preview
+
+![dinky](./dinky.png "dinky preview")
