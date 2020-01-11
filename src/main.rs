@@ -11,12 +11,12 @@
 #[macro_use] extern crate router;
 #[macro_use] extern crate serde_derive;
 extern crate atty;
+extern crate chrono;
 extern crate directories;
 extern crate docopt;
 extern crate iron;
 extern crate params;
 extern crate stderrlog;
-extern crate time;
 extern crate url;
 
 mod conf;

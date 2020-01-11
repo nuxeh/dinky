@@ -4,7 +4,7 @@ use diesel::connection::SimpleConnection;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use failure::Error;
-use time;
+use chrono::Local;
 
 use crate::conf::Conf;
 use crate::db_models::*;
@@ -63,7 +63,7 @@ fn connect_mysql(conf: &Conf) -> MysqlConnection {
 */
 
 fn timestamp() -> String {
-    time::now().to_local().ctime().to_string()
+    Local::now().to_string()
 }
 
 pub fn insert_url(conf: &Conf, url: &str) -> Result<String, Error> {
