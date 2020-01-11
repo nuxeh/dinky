@@ -40,7 +40,7 @@ const USAGE: &str = "
 Link shortening service.
 
 Usage:
-    dinky [options] [-v...] [--db=PATH]
+    dinky [options] [-v...]
 
 Options:
     -h --help       Show this help message.

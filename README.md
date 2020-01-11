@@ -14,6 +14,10 @@ A basic, self-hosted, link shortening service.
 
     cargo test
 
+## CLI options
+
+Usage information can be provided with `--help`.
+
 ## Configuration
 
 There is a configuration file (in TOML format), which will be created in a
