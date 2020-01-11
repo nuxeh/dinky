@@ -62,6 +62,8 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
 }
 
 fn redirect(conf: &Conf, req: &mut Request) -> IronResult<Response> {
+    let html = "text/html".parse::<mime::Mime>().unwrap();
+
     let query = &req.extensions
         .get::<Router>()
         .unwrap()
@@ -75,7 +77,7 @@ fn redirect(conf: &Conf, req: &mut Request) -> IronResult<Response> {
         },
         Err(e) => {
             warn!("{}", e);
-            Ok(Response::with((StatusOk, "Link not found!")))
+            Ok(Response::with((html, StatusOk, index(conf, "Link not found!"))))
         },
     }
 }
