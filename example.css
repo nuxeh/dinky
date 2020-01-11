@@ -38,3 +38,9 @@ body
   color: white;
   padding-top: 5px;
 }
+
+#dinky-error
+{
+  color: #aa0000;
+  font-weight: bold;
+}

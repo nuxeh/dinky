@@ -55,6 +55,13 @@ fn css(conf: &Conf) -> IronResult<Response> {
     Ok(Response::with((StatusOk, css)))
 }
 
+fn err<S>(text: S) -> String
+where
+    S: std::fmt::Display
+{
+    format!("<div id=\"dinky-error\">{}</div>", text)
+}
+
 fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
     if link.parse::<Url>().is_err() {
         bail!("invalid URL \"{}\"", link);
@@ -83,7 +90,7 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
             info!("submission <{}> from {}", link, client_addr);
             match shorten(conf, link, &req_url) {
                 Ok(l) => index(&conf, &l),
-                Err(e) => index(&conf, &format!("{}", e)),
+                Err(e) => index(&conf, &err(e)),
             }
         },
         _ => index(&conf, &form(conf)),
@@ -108,7 +115,7 @@ fn redirect(conf: &Conf, req: &mut Request) -> IronResult<Response> {
         },
         Err(e) => {
             warn!("{}", e);
-            Ok(Response::with((html, StatusOk, index(conf, "Link not found!"))))
+            Ok(Response::with((html, StatusOk, index(conf, &err("Link not found!")))))
         },
     }
 }
