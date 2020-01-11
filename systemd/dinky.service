@@ -1,0 +1,13 @@
+[Unit]
+Description=dinky
+After=network.target
+Requires=network.target
+
+[Service]
+User=dinky
+ExecStart=/home/<you>/.cargo/bin/dinky
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
