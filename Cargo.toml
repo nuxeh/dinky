@@ -9,22 +9,22 @@ description = "A simple link shortening service"
 keywords = ["short", "link", "shortening", "service"]
 
 [dev-dependencies]
-diff = "0.1.11"
+diff = "0.1.12"
 
 [dependencies]
-serde = "1.0.88"
-serde_derive = "1.0.88"
+serde = "1.0.104"
+serde_derive = "1.0.104"
 docopt = "1.1.0"
-log = "0.4.6"
-stderrlog = "0.4.1"
-atty = "0.2.11"
-iron = "0.6.0"
+log = "0.4.8"
+stderrlog = "0.4.3"
+atty = "0.2.14"
+iron = "0.6.1"
 params = "0.8.0"
 router = "0.6.0"
 harsh = "0.1.6"
-url = "1.7.2"
+url = "2.1.1"
 directories = "2.0.2"
-failure = "0.1.5"
-toml = "0.5.3"
-time = "0.1.42"
-diesel = { version = "1.4.2", features = ["sqlite"] }
+failure = "0.1.6"
+toml = "0.5.5"
+time = "0.2.2"
+diesel = { version = "1.4.3", features = ["sqlite"] }
