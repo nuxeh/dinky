@@ -46,17 +46,18 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let client_addr = req.remote_addr;
     let params = req.get_ref::<Params>().unwrap();
 
-    match params.find(&["url"]) {
+    let resp = match params.find(&["url"]) {
         Some(&Value::String(ref link)) => {
             info!("submission <{}> from {}", link, client_addr);
-            let resp = match shorten(conf, link, &req_url) {
+            match shorten(conf, link, &req_url) {
                 Ok(l) => l,
                 Err(e) => index(&format!("{}", e)),
-            };
-            Ok(Response::with((html, StatusOk, resp)))
+            }
         },
-        _ => Ok(Response::with((html, StatusOk, index(DEFAULT_FORM)))),
-    }
+        _ => index(DEFAULT_FORM),
+    };
+
+    Ok(Response::with((html, StatusOk, resp)))
 }
 
 fn redirect(conf: &Conf, req: &mut Request) -> IronResult<Response> {
