@@ -1,5 +1,5 @@
 use failure::Error;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::fs;
 use std::fs::File;
 use std::io::Write;
@@ -14,6 +14,14 @@ pub struct Settings {
     pub bind: String,
     pub port: usize,
     pub base_url: String,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Index {
+    pub enable: bool,
+    pub html: PathBuf,
+    pub css: PathBuf,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -64,6 +72,7 @@ pub struct Conf {
     pub settings: Settings,
     pub hash: Hash,
     pub database: Database,
+    pub index: Index,
 }
 
 impl Conf {

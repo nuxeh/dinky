@@ -10,3 +10,8 @@ salt = "dinkysalt123"
 [database]
 kind = "Sqlite"
 path = "example_db"
+
+[index]
+enable = false
+html = ""
+css = ""

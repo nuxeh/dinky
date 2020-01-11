@@ -11,8 +11,11 @@ use failure::Error;
 use crate::db;
 use crate::conf::Conf;
 
+// pull in static index content
+include!(concat!(env!("OUT_DIR"), "/index.rs"));
+
 fn index() -> String {
-    String::from("index")
+    String::from(DEFAULT_INDEX)
 }
 
 fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
