@@ -18,6 +18,10 @@ fn index() -> String {
     String::from(DEFAULT_INDEX)
 }
 
+fn css() -> IronResult<Response> {
+    Ok(Response::with((StatusOk, DEFAULT_CSS)))
+}
+
 fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
     if link.parse::<Url>().is_err() {
         bail!("invalid URL '{}'", link);
@@ -83,6 +87,7 @@ pub fn listen(conf: &'static Conf) {
     let router = router!{
         submit: get "/" => move |request: &mut Request| submit(conf, request),
         redirect: get "/:hash" => move |request: &mut Request| redirect(conf, request),
+        css: get "/dinky.css" => move |_: &mut Request| css(),
         favicon: get "/favicon.ico" => not_found,
     };
 
