@@ -40,7 +40,7 @@ base_url = "http://example.com/"
 - Port and IP address to bind to.
 - The fully qualified domain name used to generate links. This must point to
   the same path as `dinky` is being run on.
-    
+
 ~~~
 [hash]
 length = 10
@@ -49,7 +49,7 @@ salt = "dinkysalt123"
 
 - Length of the generated short link hash, and a salt to use in the hash
   generation.
- 
+
 ~~~
 [database]
 kind = "Sqlite"
@@ -57,7 +57,7 @@ path = "example_db"
 ~~~
 
 - Database to use. Currently only sqlite is supported.
-  
+
 ~~~
 [index]
 hidden = false
