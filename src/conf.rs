@@ -19,7 +19,7 @@ pub struct Settings {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Index {
-    pub enable: bool,
+    pub hidden: bool,
     pub html: Option<PathBuf>,
     pub css: Option<PathBuf>,
     pub form: Option<PathBuf>,

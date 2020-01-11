@@ -12,4 +12,4 @@ kind = "Sqlite"
 path = "example_db"
 
 [index]
-enable = false
+hidden = false
