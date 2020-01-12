@@ -1,6 +1,7 @@
 ![dinky](./logo.svg "dinky")
 
-[![build status](https://img.shields.io/crates/v/dinky)](https://crates.io/crates/dinky)
+[![build status](https://api.travis-ci.org/nuxeh/dinky.png?branch=master)](https://travis-ci.org/nuxeh/dinky)
+[![crates.io](https://img.shields.io/crates/v/dinky)](https://crates.io/crates/dinky)
 
 A basic, self-hosted, link shortening service.
 
