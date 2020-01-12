@@ -13,7 +13,8 @@ use crate::db::DbType;
 pub struct Settings {
     pub bind: String,
     pub port: usize,
-    pub base_url: String,
+    #[serde(with = "url_serde")]
+    pub base_url: Option<Url>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -44,7 +45,7 @@ impl Default for Settings {
         Self {
             port: 4444,
             bind: "127.0.0.1".to_string(),
-            base_url: "http://example.com/".to_string(),
+            base_url: Some(Url::parse("http://example.com/").unwrap()),
         }
     }
 }
@@ -86,7 +87,6 @@ impl Conf {
 
     pub fn validate(&self) -> Result<(), Error> {
         if self.database.path.is_empty() {bail!("database.path can't be empty")}
-        self.settings.base_url.parse::<Url>()?;
         Ok(())
     }
 

@@ -75,12 +75,12 @@ fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
 fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     let html = "text/html".parse::<mime::Mime>().unwrap();
 
-    let req_url = if conf.settings.base_url.is_empty() {
+    let req_url = if let Some(b) = &conf.settings.base_url {
+        b.clone()
+    } else {
         let mut req_url: Url = req.url.clone().into();
         req_url.set_query(None);
-        req_url.into_string()
-    } else {
-        conf.settings.base_url.clone()
+        req_url
     };
 
     let client_addr = req.remote_addr;
@@ -89,7 +89,7 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     match params.find(&["url"]) {
         Some(&Value::String(ref link)) => {
             info!("submission <{}> from {}", link, client_addr);
-            let resp = match shorten(conf, link, &req_url) {
+            let resp = match shorten(conf, link, &req_url.to_string()) {
                 Ok(l) => index(&conf, &l),
                 Err(e) => index(&conf, &err(e)),
             };
