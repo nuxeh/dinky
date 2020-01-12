@@ -63,12 +63,12 @@ where
     format!("<div id=\"dinky-error\">{}</div>", text)
 }
 
-fn shorten(conf: &Conf, link: &str, base: &str) -> Result<String, Error> {
+fn shorten(conf: &Conf, link: &str, base: &Url) -> Result<String, Error> {
     if link.parse::<Url>().is_err() {
         bail!("invalid URL \"{}\"", link);
     };
     let hash = db::insert_url(conf, link)?;
-    let url = format!("{}{}", base, hash);
+    let url = base.join(&hash)?.into_string();
     Ok(format!(r#"<a href="{}" id="dinky-link">{}</a>"#, url, url))
 }
 
@@ -89,7 +89,7 @@ fn submit(conf: &Conf, req: &mut Request) -> IronResult<Response> {
     match params.find(&["url"]) {
         Some(&Value::String(ref link)) => {
             info!("submission <{}> from {}", link, client_addr);
-            let resp = match shorten(conf, link, &req_url.to_string()) {
+            let resp = match shorten(conf, link, &req_url) {
                 Ok(l) => index(&conf, &l),
                 Err(e) => index(&conf, &err(e)),
             };
