@@ -2,6 +2,7 @@
 
 - Use serde_url to read base URL from configuration, and the url::Url type to
   represent the base URL when generating hashed short links
+- More verbose errors for URL formatting errors
 
 ## v0.2.1
 

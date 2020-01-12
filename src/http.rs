@@ -64,8 +64,8 @@ where
 }
 
 fn shorten(conf: &Conf, link: &str, base: &Url) -> Result<String, Error> {
-    if link.parse::<Url>().is_err() {
-        bail!("invalid URL \"{}\"", link);
+    if let Err(err) = link.parse::<Url>() {
+        bail!("invalid URL \"{}\": {}", link, err);
     };
     let hash = db::insert_url(conf, link)?;
     let url = base.join(&hash)?.into_string();
