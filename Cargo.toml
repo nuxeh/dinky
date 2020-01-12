@@ -5,6 +5,7 @@ authors = ["Edward Cragg <ed@eipi.xyz>"]
 edition = "2018"
 repository = "https://github.com/nuxeh/dinky"
 license = "ISC"
+readme = "README.md"
 description = "A simple link shortening service"
 keywords = ["short", "link", "shortening", "service"]
 
