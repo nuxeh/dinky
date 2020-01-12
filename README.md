@@ -1,5 +1,7 @@
 ![dinky](./logo.svg "dinky")
 
+[![build status](https://img.shields.io/crates/v/dinky)](https://crates.io/crates/dinky)
+
 A basic, self-hosted, link shortening service.
 
 ## Install
