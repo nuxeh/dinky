@@ -9,6 +9,9 @@ readme = "README.md"
 description = "A simple link shortening service"
 keywords = ["short", "link", "shortening", "service"]
 
+[badges]
+travis-ci = { repository = "nuxeh/dinky", branch = "master" }
+
 [dev-dependencies]
 diff = "0.1.12"
 
