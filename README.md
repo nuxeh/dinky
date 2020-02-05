@@ -1,6 +1,11 @@
 ![dinky](./logo.svg "dinky")
 
-[![build status](https://api.travis-ci.org/nuxeh/dinky.png?branch=master)](https://travis-ci.org/nuxeh/dinky)
+[![build](https://github.com/nuxeh/dinky/workflows/build/badge.svg)](https://github.com/nuxeh/dinky/actions?query=branch%3Amaster+event%3Apush+workflow%3Abuild)
+[![test](https://github.com/nuxeh/dinky/workflows/tests/badge.svg)](https://github.com/nuxeh/dinky/actions?query=branch%3Amaster+event%3Apush+workflow%3Atests)
+[![clippy](https://github.com/nuxeh/dinky/workflows/clippy/badge.svg)](https://github.com/nuxeh/dinky/actions?query=branch%3Amaster+event%3Apush+workflow%3Aclippy)
+[![macOS](https://github.com/nuxeh/dinky/workflows/macOS/badge.svg)](https://github.com/nuxeh/dinky/actions?query=branch%3Amaster+event%3Apush+workflow%3AmacOS)
+[![windows](https://github.com/nuxeh/dinky/workflows/windows/badge.svg)](https://github.com/nuxeh/dinky/actions?query=branch%3Amaster+event%3Apush+workflow%3Awindows)
+[![coveralls](https://img.shields.io/coveralls/github/nuxeh/dinky/master)](https://coveralls.io/github/nuxeh/dinky?branch=master)
 [![crates.io](https://img.shields.io/crates/v/dinky)](https://crates.io/crates/dinky)
 
 A basic, self-hosted, link shortening service.
