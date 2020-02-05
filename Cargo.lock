@@ -196,6 +196,7 @@ dependencies = [
  "failure 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "harsh 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "iron 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libsqlite3-sys 0.16.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "params 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "router 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -354,6 +355,7 @@ name = "libsqlite3-sys"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
+ "cc 1.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "pkg-config 0.3.17 (registry+https://github.com/rust-lang/crates.io-index)",
  "vcpkg 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
