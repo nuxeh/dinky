@@ -1,0 +1,26 @@
+name: windows
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
+    - name: Build
+      run: cargo build --verbose --features "sqlite_bundled"
+
+    - name: Build tests
+      run: cargo test --verbose --no-run --features "sqlite_bundled"
+
+    - name: Run tests
+      run: cargo test --verbose --features "sqlite_bundled" -- --test-threads=1
