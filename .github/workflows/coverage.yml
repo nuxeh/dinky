@@ -21,16 +21,6 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get install -y libsqlite3-dev
 
-    - name: Install Tarpaulin
-      run: cargo install cargo-tarpaulin
-
-    - name: Push Tarpaulin results to Codecov.io
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run: |
-        cargo tarpaulin --out Xml
-        bash <(curl -s https://codecov.io/bash) -X gcov -t $CODECOV_TOKEN
-
     - name: Install grcov
       run: cargo install grcov
 
