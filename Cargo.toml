@@ -31,6 +31,6 @@ url_serde = "0.2.0"
 directories = "2.0.2"
 failure = "0.1.6"
 toml = "0.5.5"
-chrono = "0.4.10"
+chrono = "0.4.19"
 diesel = { version = "1.4.3", features = ["sqlite"] }
 libsqlite3-sys = { version = "0.16.0", features = ["bundled"] }
