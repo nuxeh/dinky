@@ -16,7 +16,7 @@ travis-ci = { repository = "nuxeh/dinky", branch = "master" }
 diff = "0.1.12"
 
 [dependencies]
-serde = "1.0.104"
+serde = "1.0.119"
 serde_derive = "1.0.104"
 docopt = "1.1.0"
 log = "0.4.8"
