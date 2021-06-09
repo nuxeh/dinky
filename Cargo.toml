@@ -32,5 +32,5 @@ directories = "2.0.2"
 failure = "0.1.6"
 toml = "0.5.5"
 chrono = "0.4.10"
-diesel = { version = "1.4.3", features = ["sqlite"] }
+diesel = { version = "1.4.7", features = ["sqlite"] }
 libsqlite3-sys = { version = "0.16.0", features = ["bundled"] }
